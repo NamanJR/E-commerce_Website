@@ -1,0 +1,35 @@
+{% extends 'admin/dashboard.html' %}
+{% load static %}
+
+{% block body %}
+
+<div class="container row">
+        <form method="post" action="/additem/" enctype="multipart/form-data" class=" text-center bg-dark text-white">
+            {% csrf_token %}
+            <h3>Category</h3>
+            <select name="cat" class="mb-2">
+                {% for data in category %}
+                <option class="w-100" value="{{data.category_name}}">{{data.category_name}}</option>
+                {% endfor %}
+            </select><br>
+            <h3>Sub_Category</h3>
+            <select name="subcat" class="mb-2">
+                {% for sub in subcategory %}
+                <option class="w-100" value="{{sub.subcatname}}">{{sub.subcatname}}</option>
+                {% endfor %}
+            </select><br>
+            <h3>Upload Photo<input class="w-100" type="file" name="upload" accept="images/*"></h3>
+            <!-- <input class="ml-5 w-100" type="file" name="upload" accept="images/*"><br> -->
+            <h3>Name</h3>
+            <input class="w-100" name="pname" type="text"><br>
+            <h3>Price</h3>
+            <input class="w-100" name="pprice" type="no"><br>
+            <h3>Quantity</h3>
+            <input class="w-100" name="pquantity" type="no"><br>
+            <h3>SKU_ID</h3>
+            <input class="w-100" name="pskuid" type="text"><br>
+
+            <input type="submit" class="btn btn-info mt-2" value="ADD">
+        </form>
+</div>
+{% endblock %}

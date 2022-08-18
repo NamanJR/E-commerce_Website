@@ -1,0 +1,50 @@
+{% extends 'admin/dashboard.html' %}
+{% load static %}
+
+{% block body %}
+
+<div class="row container justify-content-around">
+    <div class="col-md-5 mt-4">
+        <form action="/sub_add/" method="post">
+            {% csrf_token %}
+            <div class="form-outline text-center mb-4">
+                <h2 class="pb-3" >ADD Category</h2>
+                <h3>Select Category</h3>
+
+                <select class="mb-2" name="data">
+                    {% for data in main_categories %}
+                    <option value="{{data.category_name}}">{{data.category_name}}</option>
+                    {% endfor %}
+                </select>
+                <input type="text" id="form3Example1cg" name="cat"
+                  class="form-control form-control-lg border border-3 border-dark" />
+              </div>
+
+              <div class="d-flex justify-content-center">
+                <button type="submit" class="btn btn-primary btn-block btn-lg">Add</button>
+              </div>
+        </form>
+    </div>
+    <div class="col-md-5">
+        <table class="table">
+            <thead>
+                <tr>
+                    <th>Name</th>
+                </tr>
+            </thead>
+        {%  for data in categories %}
+            <tbody>
+                
+                <tr>
+                    <td>{{data.subcatname}}</td>
+                    <td><a href="/delete_sub?uid={{data.id}}" class="btn btn-danger"
+                            onclick="return deleteuser()">Delete</a><a href="/edit_sub?uid={{data.id}}"
+                            class="btn btn-primary mx-1" onclick="return edituser()">Edit</a></td>
+                </tr>
+            
+            </tbody>
+            {% endfor %}
+        </table>
+    </div>
+
+{% endblock %}

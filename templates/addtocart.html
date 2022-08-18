@@ -1,0 +1,168 @@
+{% load static %}
+<!DOCTYPE html>
+<html lang="en">
+
+<head>
+    <meta charset="UTF-8">
+    <meta http-equiv="X-UA-Compatible" content="IE=edge">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <link href="https://cdnjs.cloudflare.com/ajax/libs/font-awesome/6.0.0/css/all.min.css" rel="stylesheet" />
+    <!-- Google Fonts -->
+    <link href="https://fonts.googleapis.com/css?family=Roboto:300,400,500,700&display=swap" rel="stylesheet" />
+    <!-- MDB -->
+    <link href="https://cdnjs.cloudflare.com/ajax/libs/mdb-ui-kit/4.1.0/mdb.min.css" rel="stylesheet" />
+    <title>Document</title>
+</head>
+
+<body>
+
+    <section class="h-100" style="background-color: #eee;">
+        <form method="post" action="/checkout/">
+            {% csrf_token %}
+        <div class="container h-100 py-5">
+            <div class="row d-flex justify-content-center align-items-center h-100">
+                <div class="col-10">
+
+                    <div class="d-flex justify-content-between align-items-center mb-4">
+                        <h3 class="fw-normal mb-0 text-black">Shopping Cart</h3>
+                        <div>
+                            <p class="mb-0"><span class="text-muted">Sort by:</span> <a href="#!"
+                                    class="text-body">price <i class="fas fa-angle-down mt-1"></i></a></p>
+                        </div>
+                    </div>
+                        
+                    <div class="card rounded-3 mb-4">
+                        <div class="card-body p-4">
+
+                            {% if count_data %}
+                            {% for product in product_data %}
+                            {% for products in product %}
+                            <div class="row d-flex justify-content-between align-items-center">
+                                <div class="col-md-2 col-lg-2 col-xl-2">
+                                    <img src="{{products.image}}"
+                                        class="img-fluid rounded-3" alt="Cotton T-shirt">
+                                </div>
+                                <div class="col-md-3 col-lg-3 col-xl-3">
+                                    <input class="lead fw-normal mb-2 border-0" name="pname" value="{{products.name}}" readonly  />
+                                </div>
+                                <div class="col-md-3 col-lg-3 col-xl-2 d-flex">
+                                    <button class="btn btn-link px-2" type="button"
+                                        onclick="sub({{products.id}})" id="sub_button{{products.id}}">
+                                        <i class="fas fa-minus"></i>
+                                    </button>
+
+                                        <input id="{{products.id}}" min="0" name="quantity" value="1" type="number" readonly
+                                        class="form-control form-control-sm" />
+
+                                        <input id="hid{{products.id}}" type="hidden" value="{{products.price}}" />
+
+                                    <button class="btn btn-link px-2" type="button"
+                                        onclick="add({{products.id}})">
+                                        <i class="fas fa-plus"></i>
+                                    </button>
+                                    
+                                </div>
+                                <div class="col-md-3 col-lg-2 col-xl-2 offset-lg-1">
+                                    <input id="pr{{products.id}}" class="pricedata border-0"  name="price" value="{{products.price}}"/ readonly>
+                                </div>
+                                <div class="col-md-1 col-lg-1 col-xl-1 text-end">
+                                    <a href="/deletecart?details_id={{products.id}}" class="text-danger"><i class="fas fa-trash fa-lg"></i></a>
+                                </div>
+                            </div>
+                            {% endfor %}
+                            {% endfor %}
+                        </div>
+                    </div>
+                    <input type="hidden" value="{{count_data}}" id="product_length">
+                    {% endif %}
+
+
+                    <div class="d-flex justify-content-between align-items-center mb-4 ">
+                        <h3 class="fw-bold mb-0 text-black ">TOTAL INR:</h3>
+                    
+                            <!-- <span style="font-size:20px ;">RS</span><input type="number" id="total" style="padding: 5px; font-size: large; text-align: left;"; readonly> -->
+                        <div>
+                            <span style="font-size: 30px ;" class="fw-bold text-black" >RS :</span>
+                            <input style="font-size: 30px ;" class="fw-bold text-black border-0 bg-transparent r-0" name="total" id="total" readonly/>
+                        </div>
+                    </div>
+
+
+                    <div class="card">
+                        <div class="card-body mb-0">
+                            <input type="submit" class="btn btn-primary btn-block btn-lg" value="Proceed To Checkout" />
+                            <a href="/" class="btn btn-warning btn-block btn-lg">Continue Shopping</a>
+                        </div>
+                    </div>
+
+                </div>
+            </div>
+        </div>
+    </form>
+    </section>
+    <script src="https://ajax.googleapis.com/ajax/libs/jquery/2.1.1/jquery.min.js"></script>
+    <script>
+        function add(id){
+            let newarr = [];
+            let data = 0
+            let count = parseInt(document.getElementById(`${id}`).value)
+            count = count +1 
+            document.getElementById(`${id}`).value=count
+            const price = Number(document.getElementById(`hid${id}`).value);
+            total = count * price;
+            document.getElementById(`pr${id}`).value = total;
+            document.getElementById(`sub_button${id}`).disabled=false
+            $(document).ready(function(){
+            $(".pricedata").each(function(){
+                newarr.push($(this.value));
+            })
+            for(let i=0; i<newarr.length; i++){
+                data += (Number(newarr[i].selector));
+            }
+                document.getElementById("total").value = data
+        });
+        } 
+        function sub(id){
+            let newarr = [];
+            let data = 0
+            let count = parseInt(document.getElementById(`${id}`).value)
+            if(count <=1 ){
+                document.getElementById(`sub_button${id}`).disabled=true
+            }
+            else{
+                count = count - 1
+                document.getElementById(`${id}`).value=count
+                const price = Number(document.getElementById(`hid${id}`).value);
+                total = count * price;
+                document.getElementById(`pr${id}`).value = total;
+                $(document).ready(function(){
+                $(".pricedata").each(function(){
+                    newarr.push($(this.value));
+                })
+                for(let i=0; i<newarr.length; i++){
+                    data += (Number(newarr[i].selector));
+                }
+                document.getElementById("total").value = data
+            });
+            }
+        } 
+        let newarr1 = []
+        $(document).ready(function(){
+            let data = 0
+            $(".pricedata").each(function(){
+                newarr1.push($(this.value));
+            })
+            console.log(newarr1)
+            for(let i=0; i<newarr1.length; i++){
+                data += (Number(newarr1[i].selector));
+            }
+            console.log(data)
+            document.getElementById("total").value = data
+        });
+       
+
+    </script>
+</body>
+
+</html>
+
